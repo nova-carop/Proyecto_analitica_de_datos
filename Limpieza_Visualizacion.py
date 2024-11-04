@@ -1,7 +1,4 @@
 # %%
-# %%
-!pip install funpymodeling
-# %%
 # importar librerias
 import matplotlib.pyplot as plt
 import seaborn as sns
@@ -9,9 +6,9 @@ import pandas as pd
 from funpymodeling.exploratory import status
 import numpy as np
 
-# cargar el dataframe con la info del csv
-df = pd.read_csv(r'C:\Users\mtsll\Desktop\Análisis de datos\GIT\Proyecto_analitica_de_datos\Tema 10.csv')
-#df = pd.read_csv(r'C:\Users\Fernanda\Desktop\CPI - Analisis datos\Proyecto\Tema 10.csv')
+# cargar el dataframe con la info del csv de manera generica
+df = pd.read_csv('Tema_10.csv')
+
 # %%
 # analizar info general del df
 df.head()
@@ -185,3 +182,36 @@ plt.show()
 # PENDIENTE VER COMO COMPLETAR INTERPOLAR VALORES VACIOS EN DEPARTMENT Y TEAM
 
 # %%
+
+# LIMPIEZA AVANZADA PARA LOS CAMPOS 10 A 14
+
+# Campo 10: wip
+df['wip'] = df['wip'].fillna(df['wip'].median())  # Rellenar valores faltantes con la mediana
+df['wip'] = df['wip'].apply(lambda x: min(max(x, 0), 5000))  # Limitar a un rango máximo de 5000 
+
+# Campo 11: over_time
+df['over_time'] = df['over_time'].fillna(0)
+df['over_time'] = df['over_time'].apply(lambda x: min(max(x, 0), 720))  # Limitar a un máximo de 720 minutos
+
+# Campo 12: incentive
+df['incentive'] = df['incentive'].fillna(0)
+df['incentive'] = df['incentive'].apply(lambda x: min(max(x, 0), 500))  # Ajuste a un máximo de 500 
+
+# Campo 13: idle_time
+df['idle_time'] = df['idle_time'].fillna(0)
+df['idle_time'] = df['idle_time'].apply(lambda x: min(max(x, 0), 60))  # Limitar a un máximo de 60 minutos
+
+# Campo 14: idle_men
+df['idle_men'] = df['idle_men'].fillna(0).astype(int)
+df['idle_men'] = df['idle_men'].apply(lambda x: min(max(x, 0), 10))  # Limitar a un máximo de 10 personas
+
+# Campo 15: actual_productivity
+df['actual_productivity'] = df['actual_productivity'].fillna(0)  # Rellenar valores faltantes con 0
+df['actual_productivity'] = df['actual_productivity'].apply(lambda x: min(max(x, 0), 1))  # Limitar al rango [0, 1]
+
+# Vista previa de los datos limpios
+df[['wip', 'over_time', 'incentive', 'idle_time', 'idle_men', 'actual_productivity']].head()
+
+
+
+
