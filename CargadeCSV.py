@@ -33,3 +33,21 @@ print(fechas_q5)
 
 
 # %%
+########## Análisis SMV ###################
+#Verificar escala de los valores SMV
+df.plot(x="date", y=["smv"])
+#De acá sale que hay puntos muy altos a eliminar o mover la coma de lugar (dividr entre 10)
+def dividir_si_mayor_a_100_inplace(df, columna):
+    df[columna] = df[columna].apply(lambda x: x / 10 if x > 100 else x)
+
+#No se si tiene sentido cambiar a 0 los valores faltantes. Si tiene sentido es con esta funci[on]
+df['smv'].fillna(0, inplace=True)
+# %%
+########## Análisis WIP ###################
+
+df.plot(x="date", y=["wip"])
+
+# %%
+valores_repetidos = df['wip'].value_counts()[df['wip'].value_counts() > 1]
+print(valores_repetidos)
+# %%

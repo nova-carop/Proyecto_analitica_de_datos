@@ -1,5 +1,7 @@
+# %%
+# %%
 !pip install funpymodeling
-
+# %%
 # importar librerias
 import matplotlib.pyplot as plt
 import seaborn as sns
@@ -8,13 +10,14 @@ from funpymodeling.exploratory import status
 import numpy as np
 
 # cargar el dataframe con la info del csv
-df = pd.read_csv(r'C:\Users\Fernanda\Desktop\CPI - Analisis datos\Proyecto\Tema 10.csv')
-
+df = pd.read_csv(r'C:\Users\mtsll\Desktop\Análisis de datos\GIT\Proyecto_analitica_de_datos\Tema 10.csv')
+#df = pd.read_csv(r'C:\Users\Fernanda\Desktop\CPI - Analisis datos\Proyecto\Tema 10.csv')
+# %%
 # analizar info general del df
 df.head()
 df.shape
 status(df)
-
+# %%
 # identificar las filas que estan duplicadas en todas las columnas
 df_duplicados = df[df.duplicated()]
 df_duplicados
@@ -26,7 +29,7 @@ df.drop_duplicates(inplace=True)
 # Restablecer el índice
 df.reset_index(drop=True, inplace=True)
 df.shape
-
+# %%
 ##################################### ANALISIS EXPLORATORIO VARIABLES ####################################################
 
 ############# DATE
@@ -180,3 +183,5 @@ plt.ylabel('Team')
 plt.show()
 
 # PENDIENTE VER COMO COMPLETAR INTERPOLAR VALORES VACIOS EN DEPARTMENT Y TEAM
+
+# %%
