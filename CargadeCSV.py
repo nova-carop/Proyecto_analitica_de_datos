@@ -6,7 +6,6 @@ import pandas as pd
 from funpymodeling.exploratory import status
 
 #%%
-
 df = pd.read_csv(r'C:\Users\mtsll\Desktop\Análisis de datos\GIT\Proyecto_analitica_de_datos\Tema 10.csv')
 
 
@@ -30,6 +29,24 @@ df['quarter'].value_counts()
 
 fechas_q5 = df[df['quarter'] == 'Quarter5']['date'].unique()
 print(fechas_q5)
+# %%
+################## Data Profiling ###########
+
+# Importaciones
+
+from ydata_profiling import ProfileReport
+
+# Se lee el csv
+df = pd.read_csv(‘dataset.csv')
+# Se ejecuta reporte
+profile = ProfileReport(df, title="Reporte", explorative=True)
+# Se guarda reporte como html
+profile.to_file(output_file="Profiling_html.html")
+# Se guarda reporte como json
+profile.to_file(output_file="Profiling_json.json”)
+
+
+
 
 
 # %%
@@ -46,8 +63,15 @@ df['smv'].fillna(0, inplace=True)
 ########## Análisis WIP ###################
 
 df.plot(x="date", y=["wip"])
+# Aca vi que hay uno o m[as puntos con un valor muy alto]
+#ver el valor m[aximo]
+df.max('wip')
 
 # %%
+#hay 8 valores repetidos, podr[ia ser aunque raro]
 valores_repetidos = df['wip'].value_counts()[df['wip'].value_counts() > 1]
 print(valores_repetidos)
+
+
+
 # %%
