@@ -183,7 +183,7 @@ plt.show()
 
 # %%
 
-# LIMPIEZA AVANZADA PARA LOS CAMPOS 10 A 14
+# LIMPIEZA AVANZADA PARA LOS CAMPOS 10 A 15
 
 # Campo 10: wip
 df['wip'] = df['wip'].fillna(df['wip'].median())  # Rellenar valores faltantes con la mediana
