@@ -6,8 +6,9 @@ import pandas as pd
 from funpymodeling.exploratory import status
 
 #%%
-df = pd.read_csv(r'C:\Users\mtsll\Desktop\Análisis de datos\GIT\Proyecto_analitica_de_datos\Tema 10.csv')
 
+# cargar el dataframe con la info del csv de manera generica
+df = pd.read_csv('Tema_10.csv')
 
 # %%
 df.head()
