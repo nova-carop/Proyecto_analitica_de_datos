@@ -78,15 +78,34 @@ df['team'] = df['team'].ffill().bfill()
 
 
 # %% VARIABLE TARGETED_PRODUCTIVITY
+#Verificar escala de los valores targeted_productivity
+df.plot(x='date', y=['targeted_productivity'])
+
+df['targeted_productivity'] = df['targeted_productivity'].fillna(df['targeted_productivity'].median())  # Rellenar valores faltantes con la mediana
+df['targeted_productivity'] = df['targeted_productivity'].apply(lambda x: min(0.3,max(x, 0))  # Limitar a un rango de minimo 0.3 según gráfico
+
 
 
 # %% VARIABLE SMV
+#Verificar escala de los valores SMV
+df.plot(x="date", y=["smv"])
+
+df['smv'] = df['smv'].fillna(df['smv'].median())  # Rellenar valores faltantes con la mediana
+df['smv'] = df['smv'].apply(lambda x: min(max(x, 0), 100))  # Limitar a un rango máximo de 100, según gráfico
 
 
 # %% VARIABLE NO_OF_STYLE_CHANGE
+#Verificar escala de los valores no_of_style_change
+df.plot(x='date', y=['no_of_style_change'])
 
+df['no_of_style_change'] = df['no_of_style_change'].fillna(df['no_of_style_change'].median())  # Rellenar valores faltantes con la mediana
 
 # %% VARIABLE NO_OF_WORKERS
+#Verificar escala de los valores no_of_workers
+df.plot(x='date', y=['no_of_workers'])
+
+df['no_of_workers'] = df['no_of_workers'].fillna(df['no_of_workers'].median())  # Rellenar valores faltantes con la mediana
+df['no_of_workers'] = df['no_of_workers'].apply(lambda x: min(max(x, 0), 60))  # Limitar a un rango máximo de 60, según gráfico 
 
 
 # %% VARIABLE WIP
