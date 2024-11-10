@@ -141,7 +141,7 @@ from sklearn.metrics import r2_score
 df = pd.get_dummies(df, columns=['day','department'])
 
 # %% eliminar columnas innecesarias
-df.drop(['date','quarter','day,'department'], axis=1, inplace=True)
+df.drop(['date','quarter','day','department'], axis=1, inplace=True)
 
 # %% normalizar datos
 def normalizar_datos(data):
