@@ -75,19 +75,19 @@ def limpiar_campos_numericos(df):
         df[campo] = df[campo].fillna(df[campo].median()).apply(lambda x: min(max(x, min_val), max_val))
     return df
 
-# %% Funciones de visualización
-def crear_boxplot(df):
+#Visualizacion de datos
+def visualizacion(x,y,df):
     plt.figure(figsize=(8, 6))
-    sns.boxplot(x='department', y='team', data=df)
-    plt.title('Distribución team-department')
-    plt.xlabel('Department')
-    plt.ylabel('Team')
-    plt.show()
+    sns.boxplot(x,y,df)
+    plt.title(f'Distribucion de variables{x,y}')
+    plt.xlabel(f'Variable{x}')
+    plt.ylabel(f'Variable{y}')
+    return plt.show()
 
 # %% Funciones de modelado
 def preparar_datos_modelo(df):
     df = pd.get_dummies(df, columns=['day', 'department'])
-    df.drop(['date'], axis=1, inplace=True)
+    df.drop(['date','quarter'], axis=1, inplace=True)
     y = df['actual_productivity']
     X = df.drop('actual_productivity', axis=1)
     return train_test_split(X, y, test_size=0.2, random_state=42)
@@ -127,6 +127,9 @@ def entrenar_y_evaluar_modelo(X_train, X_val, y_train, y_val):
 # %% Ejecución del flujo de limpieza y modelado
 def main():
     df = cargar_csv()
+    print("\nVisualizacion exploratoria de los datos")
+    df = visualizacion()
+
     df = limpiar_duplicados(df)
     df = limpiar_fecha(df)
     df = limpiar_dia(df)
@@ -136,9 +139,12 @@ def main():
 
     print("\nDataFrame después de la limpieza:")
     print(df.head())
-
-    crear_boxplot(df)
-
+    
+    print("\nVisualizacion final:")
+    df = visualizacion()
+    
+    #Modelo
+    df.isnull().sum()
     X_train, X_test, y_train, y_test = preparar_datos_modelo(df)
     X_train, X_val, y_train, y_val = train_test_split(X_train, y_train, test_size=0.2, random_state=42)
 
@@ -148,3 +154,6 @@ def main():
 
 if __name__ == "__main__":
     main()
+
+
+
