@@ -80,7 +80,7 @@ def limpiar_campos_numericos(df):
         'idle_time': (0, 60),
         'idle_men': (0, 10),
         'actual_productivity': (0, 1),
-        'targeted_productivity': (0.3, 1), 
+        'targeted_productivity': (0.3, 1),  
         'smv': (0, 100),
         'no_of_workers': (0, 60)
     }
@@ -140,9 +140,12 @@ def entrenar_y_evaluar_modelo(X_train, X_val, y_train, y_val):
 # %% Ejecución del flujo de limpieza y modelado
 def main():
     df = cargar_csv()
-    print("\nVisualización exploratoria de los datos")
-    df = visualizacion()
+    # Visualización antes de la limpieza
+    print("\nVisualización exploratoria de las variables antes de la limpieza:")
+    for col in ['wip', 'over_time', 'incentive', 'idle_time', 'idle_men', 'actual_productivity', 'targeted_productivity', 'smv', 'no_of_workers']:
+        visualizacion('department', col, df)  # 'department' como ejemplo de variable categórica
 
+    #Limpieza de campos
     df = limpiar_duplicados(df)
     df = limpiar_fecha(df)
     df = limpiar_dia(df)
@@ -150,24 +153,24 @@ def main():
     df = limpiar_team(df)
     df = limpiar_campos_numericos(df)
 
-    # Aplicacion de la codificación one-hot a 'day' y 'department' inmediatamente después de limpiarlos
+    #Aplicacion de la codificación one-hot a 'day' y 'department' inmediatamente después de limpiarlos
     df = pd.get_dummies(df, columns=['day', 'department'])
-    # Elimina las columnas 'date' y 'quarter' que ya no se necesitan
+    # Eliminar las columnas 'date' y 'quarter' que ya no se necesitan
     df.drop(['date', 'quarter'], axis=1, inplace=True)
 
     print("\nDataFrame después de la limpieza:")
     print(df.head())
     
-    print("\nVisualización final:")
-    df = visualizacion()
+    #Visualización después de la limpieza
+    print("\nVisualización de las variables después de la limpieza:")
+    for col in ['wip', 'over_time', 'incentive', 'idle_time', 'idle_men', 'actual_productivity', 'targeted_productivity', 'smv', 'no_of_workers']:
+        visualizacion('department', col, df)  
     
     # Modelo
     df.isnull().sum()
     X_train, X_test, y_train, y_test = preparar_datos_modelo(df)
     X_train, X_val, y_train, y_val = train_test_split(X_train, y_train, test_size=0.2, random_state=42)
-
     X_train, X_val, X_test = normalizar_datos(X_train, X_val, X_test)
-
     entrenar_y_evaluar_modelo(X_train, X_val, y_train, y_val)
 
 if __name__ == "__main__":
