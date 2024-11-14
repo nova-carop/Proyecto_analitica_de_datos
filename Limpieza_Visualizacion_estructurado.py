@@ -1,4 +1,5 @@
 # %% Importar librerías
+
 import matplotlib.pyplot as plt
 import seaborn as sns
 import pandas as pd
@@ -62,23 +63,26 @@ def limpiar_dia(df):
     df['day'] = df.apply(asignar_dia, axis=1)
     return df
 
-def limpiar_department(df):
-    df['department'] = df['department'].str.strip()
-    return df
 
-def limpiar_team(df):
+
+def limpiar_team_limpiar_department(df):
     df['team'] = pd.to_numeric(df['team'], errors='coerce').astype('Int64')
+    df['department'] = df['department'].str.strip()
+    df.sort_values(by=['date', 'team', 'department']).reset_index(drop=True)
+    df['department'] = df['department'].ffill().bfill()
+    df['team'] = df['team'].ffill().bfill()
     return df
 
 
 def limpiar_campos_numericos(df):
     # Campos con sus rangos establecidos
+    #vacios a mediada
+    #luego rangos
     campos_con_rango = {
         'wip': (0, 5000),
-        'over_time': (0, 720),
+        'over_time': (0, 20000),
         'incentive': (0, 500),
         'idle_time': (0, 60),
-        'idle_men': (0, 10),
         'actual_productivity': (0, 1),
         'targeted_productivity': (0.3, 1),  
         'smv': (0, 100),
@@ -96,16 +100,14 @@ def limpiar_campos_numericos(df):
 # Visualización de datos
 def visualizacion(x, y, df):
     plt.figure(figsize=(8, 6))
-    sns.boxplot(x, y, df)
+    sns.boxplot(x=x, y=y, data=df)
     plt.title(f'Distribución de variables {x, y}')
     plt.xlabel(f'Variable {x}')
     plt.ylabel(f'Variable {y}')
-    return plt.show()
+    return plt.savefig(f'grafico_{y}.png')
 
 # %% Funciones de modelado
 def preparar_datos_modelo(df):
-    df = pd.get_dummies(df, columns=['day', 'department'])
-    df.drop(['date', 'quarter'], axis=1, inplace=True)
     y = df['actual_productivity']
     X = df.drop('actual_productivity', axis=1)
     return train_test_split(X, y, test_size=0.2, random_state=42)
@@ -117,10 +119,7 @@ def normalizar_datos(X_train, X_val, X_test):
     X_test = scaler.transform(X_test)
     return X_train, X_val, X_test
 
-def entrenar_modelo(X_train, y_train):
-    modelo = LinearRegression()
-    modelo.fit(X_train, y_train)
-    return modelo
+
 
 def entrenar_y_evaluar_modelo(X_train, X_val, y_train, y_val):
     modelo = LinearRegression()
@@ -136,22 +135,30 @@ def entrenar_y_evaluar_modelo(X_train, X_val, y_train, y_val):
     # Error (RMSE)
     print('Error RMSE entrenamiento: ', np.sqrt(mean_squared_error(y_train, y_train_pred)))
     print('Error RMSE validación: ', np.sqrt(mean_squared_error(y_val, y_val_pred)))
+    # Error absoluto medio porcentual
+    print('Error absoluto medio porcentual entrenamiento: ', np.mean(np.abs(y_train - y_train_pred)/y_train))
+    print('Error absoluto medio porcentual validación: ', np.mean(np.abs(y_val - y_val_pred)/y_val))
 
 # %% Ejecución del flujo de limpieza y modelado
 def main():
     df = cargar_csv()
     # Visualización antes de la limpieza
-    print("\nVisualización exploratoria de las variables antes de la limpieza:")
-    for col in ['wip', 'over_time', 'incentive', 'idle_time', 'idle_men', 'actual_productivity', 'targeted_productivity', 'smv', 'no_of_workers']:
-        visualizacion('department', col, df)  # 'department' como ejemplo de variable categórica
+    for col in ['actual_productivity', 'targeted_productivity','smv','wip','over_time','incentive','idle_time','idle_men','no_of_style_change','no_of_workers']:
+        visualizacion('team',col,df)
+
+    #guarda solo 2 boxplots tiene que guardar los 4
 
     #Limpieza de campos
     df = limpiar_duplicados(df)
     df = limpiar_fecha(df)
     df = limpiar_dia(df)
-    df = limpiar_department(df)
-    df = limpiar_team(df)
+    df = limpiar_team_limpiar_department(df)
     df = limpiar_campos_numericos(df)
+
+    #Visualización después de la limpieza
+    print("\nVisualización de las variables después de la limpieza:")
+    for col in ['actual_productivity', 'targeted_productivity','smv','wip','over_time','incentive','idle_time','idle_men','no_of_style_change','no_of_workers']:
+        visualizacion('team',col,df)  
 
     #Aplicacion de la codificación one-hot a 'day' y 'department' inmediatamente después de limpiarlos
     df = pd.get_dummies(df, columns=['day', 'department'])
@@ -161,10 +168,7 @@ def main():
     print("\nDataFrame después de la limpieza:")
     print(df.head())
     
-    #Visualización después de la limpieza
-    print("\nVisualización de las variables después de la limpieza:")
-    for col in ['wip', 'over_time', 'incentive', 'idle_time', 'idle_men', 'actual_productivity', 'targeted_productivity', 'smv', 'no_of_workers']:
-        visualizacion('department', col, df)  
+    
     
     # Modelo
     df.isnull().sum()
@@ -174,4 +178,5 @@ def main():
     entrenar_y_evaluar_modelo(X_train, X_val, y_train, y_val)
 
 if __name__ == "__main__":
+
     main()
