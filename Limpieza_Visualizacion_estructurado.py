@@ -1,5 +1,4 @@
 # %% Importar librerías
-
 import matplotlib.pyplot as plt
 import seaborn as sns
 import pandas as pd
@@ -11,8 +10,7 @@ from sklearn.preprocessing import StandardScaler
 from sklearn.linear_model import LinearRegression
 from sklearn.metrics import mean_squared_error, r2_score
 
-
-# %% Funciones de carga y análisis exploratorio
+# Funciones de carga y análisis exploratorio
 def cargar_csv(ruta='Tema_10.csv', na_values=['-', 'N/A', 'n/a']):
     df = pd.read_csv(ruta, na_values=na_values)
     print("Información general del DataFrame:")
@@ -24,7 +22,7 @@ def cargar_csv(ruta='Tema_10.csv', na_values=['-', 'N/A', 'n/a']):
     profile.to_file(output_file="Profiling.html")
     return df
 
-# %% Funciones de limpieza de datos
+# Funciones de limpieza de datos
 def limpiar_duplicados(df):
     df.drop_duplicates(inplace=True)
     df.reset_index(drop=True, inplace=True)
@@ -64,7 +62,6 @@ def limpiar_dia(df):
     return df
 
 
-
 def limpiar_team_limpiar_department(df):
     df['team'] = pd.to_numeric(df['team'], errors='coerce').astype('Int64')
     df['department'] = df['department'].str.strip()
@@ -90,7 +87,7 @@ def limpiar_campos_numericos(df):
         #Se les hace la mediana a todos los campos
         df[campo] = df[campo].fillna(df[campo].median()).apply(lambda x: min(max(x, min_val), max_val))
 
-    # Ubicada por fuera porque no necesita se limitada con un rango
+    # Ubicadas por fuera porque no necesitan ser limitadas con un rango
     df['no_of_style_change'] = df['no_of_style_change'].fillna(df['no_of_style_change'].median())
     df['idle_men'] = df['idle_men'].fillna(df['idle_men'].median())
     return df
@@ -106,7 +103,7 @@ def visualizacion(x, y, df, etapa):
     plt.savefig(f'grafico_{y}_{etapa}.png')  
     plt.close()
 
-# %% Funciones de modelado
+# Funciones de modelado
 def preparar_datos_modelo(df):
     y = df['actual_productivity']
     X = df.drop('actual_productivity', axis=1)
@@ -118,8 +115,6 @@ def normalizar_datos(X_train, X_val, X_test):
     X_val = scaler.transform(X_val)
     X_test = scaler.transform(X_test)
     return X_train, X_val, X_test
-
-
 
 def entrenar_y_evaluar_modelo(X_train, X_val, y_train, y_val):
     modelo = LinearRegression()
@@ -146,7 +141,6 @@ def main():
     for col in ['actual_productivity', 'targeted_productivity', 'smv', 'wip', 'over_time',
                 'incentive', 'idle_time', 'idle_men', 'no_of_style_change', 'no_of_workers']:
         visualizacion('team', col, df, etapa='antes de la limpieza')
-
 
     #Limpieza de campos
     df = limpiar_duplicados(df)
@@ -176,5 +170,4 @@ def main():
     entrenar_y_evaluar_modelo(X_train, X_val, y_train, y_val)
 
 if __name__ == "__main__":
-
     main()
