@@ -143,7 +143,6 @@ def entrenar_y_evaluar_modelo(X_train, X_val, y_train, y_val):
 def main():
     df = cargar_csv()
     # Visualización antes de la limpieza
-    print("\nVisualización de las variables antes de la limpieza:")
     for col in ['actual_productivity', 'targeted_productivity', 'smv', 'wip', 'over_time',
                 'incentive', 'idle_time', 'idle_men', 'no_of_style_change', 'no_of_workers']:
         visualizacion('team', col, df, etapa='antes de la limpieza')
@@ -157,7 +156,6 @@ def main():
     df = limpiar_campos_numericos(df)
 
     #Visualización después de la limpieza
-    print("\nVisualización de las variables después de la limpieza:")
     for col in ['actual_productivity', 'targeted_productivity', 'smv', 'wip', 'over_time',
             'incentive', 'idle_time', 'idle_men', 'no_of_style_change', 'no_of_workers']:
         visualizacion('team', col, df, etapa='despues de la limpieza')
