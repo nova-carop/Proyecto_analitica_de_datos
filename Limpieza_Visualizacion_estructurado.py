@@ -92,6 +92,7 @@ def limpiar_campos_numericos(df):
 
     # Ubicada por fuera porque no necesita se limitada con un rango
     df['no_of_style_change'] = df['no_of_style_change'].fillna(df['no_of_style_change'].median())
+    df['idle_men'] = df['idle_men'].fillna(df['idle_men'].median())
     return df
 
 
@@ -170,7 +171,7 @@ def main():
     print(df.head())
     
     # Modelo
-    df.isnull().sum()
+    print(df.isnull().sum())
     X_train, X_test, y_train, y_test = preparar_datos_modelo(df)
     X_train, X_val, y_train, y_val = train_test_split(X_train, y_train, test_size=0.2, random_state=42)
     X_train, X_val, X_test = normalizar_datos(X_train, X_val, X_test)
