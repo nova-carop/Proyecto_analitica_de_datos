@@ -76,8 +76,6 @@ def limpiar_team_limpiar_department(df):
 
 def limpiar_campos_numericos(df):
     # Campos con sus rangos establecidos
-    #vacios a mediada
-    #luego rangos
     campos_con_rango = {
         'wip': (0, 5000),
         'over_time': (0, 20000),
@@ -98,13 +96,14 @@ def limpiar_campos_numericos(df):
 
 
 # Visualización de datos
-def visualizacion(x, y, df):
+def visualizacion(x, y, df, etapa):
     plt.figure(figsize=(8, 6))
     sns.boxplot(x=x, y=y, data=df)
-    plt.title(f'Distribución de variables {x, y}')
+    plt.title(f'Distribución de variables {x}, {y} - {etapa}')
     plt.xlabel(f'Variable {x}')
     plt.ylabel(f'Variable {y}')
-    return plt.savefig(f'grafico_{y}.png')
+    plt.savefig(f'grafico_{y}_{etapa}.png')  
+    plt.close()
 
 # %% Funciones de modelado
 def preparar_datos_modelo(df):
@@ -139,14 +138,15 @@ def entrenar_y_evaluar_modelo(X_train, X_val, y_train, y_val):
     print('Error absoluto medio porcentual entrenamiento: ', np.mean(np.abs(y_train - y_train_pred)/y_train))
     print('Error absoluto medio porcentual validación: ', np.mean(np.abs(y_val - y_val_pred)/y_val))
 
-# %% Ejecución del flujo de limpieza y modelado
+
 def main():
     df = cargar_csv()
     # Visualización antes de la limpieza
-    for col in ['actual_productivity', 'targeted_productivity','smv','wip','over_time','incentive','idle_time','idle_men','no_of_style_change','no_of_workers']:
-        visualizacion('team',col,df)
+    print("\nVisualización de las variables antes de la limpieza:")
+    for col in ['actual_productivity', 'targeted_productivity', 'smv', 'wip', 'over_time',
+                'incentive', 'idle_time', 'idle_men', 'no_of_style_change', 'no_of_workers']:
+        visualizacion('team', col, df, etapa='antes de la limpieza')
 
-    #guarda solo 2 boxplots tiene que guardar los 4
 
     #Limpieza de campos
     df = limpiar_duplicados(df)
@@ -157,8 +157,9 @@ def main():
 
     #Visualización después de la limpieza
     print("\nVisualización de las variables después de la limpieza:")
-    for col in ['actual_productivity', 'targeted_productivity','smv','wip','over_time','incentive','idle_time','idle_men','no_of_style_change','no_of_workers']:
-        visualizacion('team',col,df)  
+    for col in ['actual_productivity', 'targeted_productivity', 'smv', 'wip', 'over_time',
+            'incentive', 'idle_time', 'idle_men', 'no_of_style_change', 'no_of_workers']:
+        visualizacion('team', col, df, etapa='despues de la limpieza')
 
     #Aplicacion de la codificación one-hot a 'day' y 'department' inmediatamente después de limpiarlos
     df = pd.get_dummies(df, columns=['day', 'department'])
@@ -167,8 +168,6 @@ def main():
 
     print("\nDataFrame después de la limpieza:")
     print(df.head())
-    
-    
     
     # Modelo
     df.isnull().sum()
