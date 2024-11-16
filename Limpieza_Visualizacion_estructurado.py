@@ -69,7 +69,6 @@ def limpiar_team_limpiar_department(df):
 def limpiar_campos_numericos(df):
     # Campos con sus rangos establecidos
     campos_con_rango = {
-        #'wip': (0, 5000),
         'over_time': (0, 20000),
         'incentive': (0, 500),
         'idle_time': (0, 60),
