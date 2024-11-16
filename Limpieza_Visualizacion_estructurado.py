@@ -69,7 +69,7 @@ def limpiar_team_limpiar_department(df):
 def limpiar_campos_numericos(df):
     # Campos con sus rangos establecidos
     campos_con_rango = {
-        'wip': (0, 5000),
+        #'wip': (0, 5000),
         'over_time': (0, 20000),
         'incentive': (0, 500),
         'idle_time': (0, 60),
@@ -85,6 +85,14 @@ def limpiar_campos_numericos(df):
     # Ubicadas por fuera porque no necesitan ser limitadas con un rango
     df['no_of_style_change'] = df['no_of_style_change'].fillna(df['no_of_style_change'].median())
     df['idle_men'] = df['idle_men'].fillna(df['idle_men'].median())
+
+    # department correlacionado con wip, cuando es finishing, wip es 0 y solo tiene valores para sweing
+    mediana_sweing = df.loc[(df['department'] == 'sweing') & (~df['wip'].isna()),'wip'].median()
+    df['wip'] = df.apply (
+    lambda row: 0 if row['department'] == 'finishing'
+    else mediana_sweing if row['department'] == 'sweing' and pd.isna(row['wip'])
+    else row['wip'],
+    axis=1)   
     return df
 
 
