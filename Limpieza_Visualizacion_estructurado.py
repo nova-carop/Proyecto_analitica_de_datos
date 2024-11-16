@@ -28,11 +28,6 @@ def limpiar_duplicados(df):
     df.reset_index(drop=True, inplace=True)
     return df
 
-# Función para calcular la semana en el mes a partir de una fecha
-def calcular_semana(fecha):
-    # crear la columna semana (equivalente a quarter) aplicando la funcion semana a cada fila segun el dato en 'date'
-    return (fecha.day - 1) // 7 + 1
-
 def limpiar_fecha(df):
     df['date'] = pd.to_datetime(df['date'], format='%m/%d/%Y', errors='coerce')
     df['date'] = df['date'].interpolate()
@@ -49,8 +44,8 @@ def limpiar_fecha(df):
         return row['date']
 
     df['date'] = df.apply(ajustar_fecha, axis=1)
-    # Aplicar función para crear columna 'semana' después de ajustar la fecha
-    df['semana'] = df['date'].apply(calcular_semana)
+    # crear la columna semana (equivalente a quarter) segun el dato en 'date'
+    df['semana'] = df['date'].apply(lambda x:4 if x.day > 28 else (x.day - 1) // 7 +1)
     return df
 
 def limpiar_dia(df):
