@@ -111,23 +111,27 @@ def normalizar_datos(X_train, X_val, X_test):
     X_test = scaler.transform(X_test)
     return X_train, X_val, X_test
 
-def entrenar_y_evaluar_modelo(X_train, X_val, y_train, y_val):
+def entrenar_y_evaluar_modelo(X_train, X_val, y_train, y_val, X_test, y_test):
     modelo = LinearRegression()
     modelo.fit(X_train, y_train)
 
     y_train_pred = modelo.predict(X_train)
     y_val_pred = modelo.predict(X_val)
+    y_test_pred = modelo.predict(X_test)
 
     print("Evaluación del modelo:")
     # Error absoluto medio (MAE)
     print('Error absoluto medio entrenamiento: ', np.mean(np.abs(y_train - y_train_pred)))
     print('Error absoluto medio validación: ', np.mean(np.abs(y_val - y_val_pred)))
+    print('Error absoluto medio test: ', np.mean(np.abs(y_test - y_test_pred)))
     # Error (RMSE)
     print('Error RMSE entrenamiento: ', np.sqrt(mean_squared_error(y_train, y_train_pred)))
     print('Error RMSE validación: ', np.sqrt(mean_squared_error(y_val, y_val_pred)))
+    print('Error RMSE test: ', np.sqrt(mean_squared_error(y_test, y_test_pred)))
     # Error absoluto medio porcentual
     print('Error absoluto medio porcentual entrenamiento: ', np.mean(np.abs(y_train - y_train_pred)/y_train))
     print('Error absoluto medio porcentual validación: ', np.mean(np.abs(y_val - y_val_pred)/y_val))
+    print('Error absoluto medio porcentual test: ', np.mean(np.abs(y_test - y_test_pred)/y_test))
 
 
 def main():
@@ -162,7 +166,7 @@ def main():
     X_train, X_test, y_train, y_test = preparar_datos_modelo(df)
     X_train, X_val, y_train, y_val = train_test_split(X_train, y_train, test_size=0.2, random_state=42)
     X_train, X_val, X_test = normalizar_datos(X_train, X_val, X_test)
-    entrenar_y_evaluar_modelo(X_train, X_val, y_train, y_val)
+    entrenar_y_evaluar_modelo(X_train, X_val, y_train, y_val, X_test, y_test)
 
 if __name__ == "__main__":
     main()
